@@ -23,16 +23,28 @@ export function useSelect(id) {
   return { value: state.id, onChange };
 }
 
-export function useSearchButton(params) {
+export function useSearchButton(url) {
   const { state } = useContext(SearchContext);
   const [search, setSearch] = useState();
   useEffect(() => {
     // api
-  }, [search]);
+    console.log(search,url)
+  }, [search,url]);
   const onClick = useCallback(() => {
     setSearch(state);
   }, [state]);
   return { onClick };
+}
+export function useDate(id) {
+  const { state, dispatch } = useContext(SearchContext);
+  const onChange = useCallback(
+    (date,dateString) => {
+        console.log(date,dateString)
+      dispatch({ type: "update", id, value:dateString });
+    },
+    [dispatch, id]
+  );
+  return { value: state.id, onChange };
 }
 
 export function useSearchContent(url, list) {

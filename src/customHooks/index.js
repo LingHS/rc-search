@@ -23,7 +23,7 @@ export function useSelect(id) {
   return { value: state.id, onChange };
 }
 
-export function useButton(params) {
+export function useSearchButton(params) {
   const { state } = useContext(SearchContext);
   const [search, setSearch] = useState();
   useEffect(() => {
@@ -33,4 +33,9 @@ export function useButton(params) {
     setSearch(state);
   }, [state]);
   return { onClick };
+}
+
+export function useSearchContent(url, list) {
+  const { state } = useContext(SearchContext);
+  return [state, { url, list }];
 }

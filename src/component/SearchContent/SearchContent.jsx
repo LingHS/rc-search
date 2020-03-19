@@ -1,6 +1,6 @@
 import React, { useReducer } from "react";
 import { Input, Select, Button } from "antd";
-import { useInput, useSelect, useButton } from "../../customHooks/index.js";
+import { useInput, useSelect, useSearchButton} from "../../customHooks/index.js";
 import reducer, { SearchContext } from "./reducer";
 import "./SearchContent.less";
 
@@ -30,7 +30,7 @@ function SelectWithLabel({ label, id }) {
 }
 
 function ButtonWithLabel({ label }) {
-  const buttonConfig = useButton();
+  const buttonConfig = useSearchButton();
   return (
     <div className="search-item">
       <Button {...buttonConfig}>{label}</Button>
@@ -58,7 +58,7 @@ function SearchContent(props) {
                   label={item.label}
                 />
               );
-            case "button":
+            case "searchButton":
               return <ButtonWithLabel key={item.label} label={item.label} />;
             default:
               return null;
@@ -70,3 +70,4 @@ function SearchContent(props) {
 }
 
 export default SearchContent;
+export { useSearchContent } from "../../customHooks/index.js";

@@ -4,7 +4,6 @@
   justify-content: flex-end;
   margin: 20px;
   padding: 10px;
-  background-color: rgb(228, 250, 239);
   min-height: 100px;
   &-input {
     width: 200px;
@@ -12,8 +11,11 @@
   &-item {
     display: flex;
     align-items: center;
-    
-    width: 280px;
-   justify-content: flex-end;
+    min-width: 280px;
+    justify-content: flex-end;
+  }
+  &-button-group {
+    display: flex;
+    justify-content: space-between;
   }
 }

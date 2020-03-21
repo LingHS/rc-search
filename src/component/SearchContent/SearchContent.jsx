@@ -1,6 +1,13 @@
 import React, { useReducer } from "react";
-import { Input, Select, Button,DatePicker,Row,Col } from "antd";
-import { useInput, useSelect, useSearchButton,useDate} from "../../customHooks/index.js";
+import PropTypes from "prop-types";
+import { Input, Select, Button, DatePicker, Row, Col } from "antd";
+import {
+  useInput,
+  useSelect,
+  useSearchButton,
+  useResetButton,
+  useDate
+} from "../../customHooks/index.js";
 import reducer, { SearchContext } from "./reducer";
 import "./SearchContent.less";
 
@@ -11,87 +18,126 @@ function InputWithLabel({ label, id }) {
   const inputConfig = useInput(id);
   return (
     <div className="search-item">
-      <div style={{ width: "70px",textAlign:"right",marginRight:'0.7em' }}>{label}:  </div>
+      <div style={{ width: "70px", textAlign: "right", marginRight: "0.7em" }}>
+        {label}:{" "}
+      </div>
       <Input {...inputConfig} allowClear className="search-input" />
     </div>
   );
 }
 
-function SelectWithLabel({ label, id }) {
+function SelectWithLabel({ label, id, option }) {
   const selectConfig = useSelect(id);
   return (
     <div className="search-item">
-      <div style={{ width: "70px",textAlign:"right",marginRight:'0.7em'  }}>{label}:  </div>
+      <div style={{ width: "70px", textAlign: "right", marginRight: "0.7em" }}>
+        {label}:{" "}
+      </div>
       <Select {...selectConfig} className="search-input" allowClear>
-        <Option key="1">1</Option>
-        <Option key="2">2</Option>
-        <Option key="3">3</Option>
+        {option.map(item => (
+          <Option key={item.key}>{item.value}</Option>
+        ))}
       </Select>
     </div>
   );
 }
 
-function ButtonWithLabel({ label ,url}) {
-  const buttonConfig = useSearchButton(url);
+function SearchButtonWithLabel({ request, setResult }) {
+  const buttonConfig = useSearchButton(request, setResult);
+  return (
+    <Button {...buttonConfig} type="primary">
+      查询
+    </Button>
+  );
+}
+
+function ResetButtonWithLabel() {
+  const buttonConfig = useResetButton();
+  return <Button {...buttonConfig}>重置</Button>;
+}
+
+function DateWithLabel({ label, id }) {
+  const dateConfig = useDate(id);
   return (
     <div className="search-item">
-      <Button {...buttonConfig} type="primary">{label}</Button>
+      <div style={{ width: "70px", textAlign: "right", marginRight: "0.7em" }}>
+        {label}:{" "}
+      </div>
+      <RangePicker
+        showTime={{ format: "HH:mm" }}
+        format="YYYY-MM-DD HH:mm"
+        {...dateConfig}
+      />
     </div>
   );
 }
 
-function DateWithLabel({label, id}){
-    const dateConfig = useDate(id);
-    return (
-    <div className="search-item" style={{width:'fit-content'}}>
-      <div style={{ width: "70px",textAlign:"right",marginRight:'0.7em'  }}>{label}:  </div>
-      <RangePicker
-        showTime={{ format: 'HH:mm' }}
-        format="YYYY-MM-DD HH:mm"
-        {...dateConfig}
-        />
-    </div>
-    )
-}
-
-function SearchContent(props) {
+function SearchContent({ request, list, setResult }) {
   const [state, dispatch] = useReducer(reducer, {});
-
   return (
     <SearchContext.Provider value={{ state, dispatch }}>
-      <section >
       <Row gutter={[16, 24]}>
-        {props.list.map(item => {
+        {list.map(item => {
           switch (item.type) {
             case "input":
               return (
-                 <Col key={item.id} span={8}><InputWithLabel  id={item.id} label={item.label} /></Col>
+                <Col key={item.id} span={8}>
+                  <InputWithLabel id={item.id} label={item.label} />
+                </Col>
               );
             case "select":
               return (
-                <Col key={item.id} span={8}><SelectWithLabel
-                  id={item.id}
-                  label={item.label}
-                />
+                <Col key={item.id} span={8}>
+                  <SelectWithLabel
+                    id={item.id}
+                    label={item.label}
+                    option={item.option}
+                  />
                 </Col>
               );
-            case "searchButton":
-              return <Col key={item.label} span={8}><ButtonWithLabel  label={item.label} url={props.url}/></Col>
-            case "button":
-              return <Col key={item.label} span={8}><div  label={item.label} className="search-item" >
-                        <Button onClick={item.onClick} type="primary" ghost>{item.label}</Button>
-                    </div></Col>
             case "date":
-              return <Col key={item.id} span={8}><DateWithLabel  id={item.id} label={item.label}/></Col>
+              return (
+                <Col key={item.id} span={8}>
+                  <DateWithLabel id={item.id} label={item.label} />
+                </Col>
+              );
             default:
               return null;
           }
         })}
-        </Row>
-      </section>
+        <Col span={4} offset={4}>
+          <div className="search-button-group">
+            <SearchButtonWithLabel
+              label={"search"}
+              request={request}
+              setResult={setResult}
+            />
+            <ResetButtonWithLabel label={"reset"} />
+          </div>
+        </Col>
+      </Row>
     </SearchContext.Provider>
   );
 }
+SearchContent.propTypes = {
+  request: PropTypes.func.isRequired,
+  list: PropTypes.arrayOf(function(
+    propValue,
+    key,
+    componentName,
+    location,
+    propFullName
+  ) {
+    if (
+      propValue[key].hasOwnProperty("id") &&
+      propValue[key].hasOwnProperty("label") &&
+      propValue[key].hasOwnProperty("type")
+    ) {
+    } else {
+      return new Error("请检查list参数的每一项的id，label，type是否存在");
+    }
+  })
+};
 
 export default SearchContent;
 export { useSearchContent } from "../../customHooks/index.js";

@@ -1,14 +1,14 @@
 import React, { useReducer } from "react";
 import PropTypes from "prop-types";
 import { Input, Select, Button, DatePicker, Row, Col } from "antd";
+import reducer, { SearchContext } from "./reducer";
 import {
   useInput,
   useSelect,
   useSearchButton,
   useResetButton,
   useDate
-} from "../../customHooks/index.js";
-import reducer, { SearchContext } from "./reducer";
+} from "./customHook";
 import "./SearchContent.less";
 
 const { Option } = Select;
@@ -140,4 +140,3 @@ SearchContent.propTypes = {
 };
 
 export default SearchContent;
-export { useSearchContent } from "../../customHooks/index.js";

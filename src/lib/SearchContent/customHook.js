@@ -1,5 +1,5 @@
 import { useContext, useState, useCallback, useEffect } from "react";
-import { SearchContext } from "../component/SearchContent/reducer";
+import { SearchContext } from "./reducer";
 
 export function useInput(id) {
   const { state, dispatch } = useContext(SearchContext);
